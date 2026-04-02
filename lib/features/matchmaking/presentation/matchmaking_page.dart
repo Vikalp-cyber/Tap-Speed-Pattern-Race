@@ -117,92 +117,94 @@ class _MatchmakingPageState extends ConsumerState<MatchmakingPage>
         children: <Widget>[
           const Positioned.fill(child: MatchmakingGridBackground()),
           SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    MatchmakingRadar(
-                      sweepTurns: _sweepCtrl,
-                      pulseScales: _pulseScales,
-                      pulseOpacities: _pulseOpacities,
-                      playerName: playerName,
-                    ),
-                    const SizedBox(height: 40),
-                    Text(
-                      'SEARCHING...',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
-                            color: matchmakingWhite,
-                            letterSpacing: 4,
-                            shadows: <Shadow>[
-                              Shadow(
-                                color: matchmakingBlue.withValues(alpha: 0.6),
-                                blurRadius: 16,
-                              ),
-                            ],
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight - 40,
+                        maxWidth: 560,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          _MatchmakingHeader(waitLabel: _waitLabel),
+                          SizedBox(
+                            height: constraints.maxHeight > 760 ? 28 : 18,
                           ),
-                    ),
-                    const SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 13,
-                          color: matchmakingMuted,
-                        ),
-                        children: <InlineSpan>[
-                          const TextSpan(text: 'Estimated wait:  '),
-                          TextSpan(
-                            text: _waitLabel,
-                            style: const TextStyle(color: matchmakingWhite),
+                          MatchmakingRadar(
+                            sweepTurns: _sweepCtrl,
+                            pulseScales: _pulseScales,
+                            pulseOpacities: _pulseOpacities,
+                            playerName: playerName,
+                          ),
+                          const SizedBox(height: 28),
+                          Text(
+                            'SEARCHING...',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                  color: matchmakingWhite,
+                                  letterSpacing: 4,
+                                  shadows: <Shadow>[
+                                    Shadow(
+                                      color: matchmakingBlue.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                      blurRadius: 16,
+                                    ),
+                                  ],
+                                ),
+                          ),
+                          const SizedBox(height: 10),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontSize: 13,
+                                    color: matchmakingMuted,
+                                  ),
+                              children: <InlineSpan>[
+                                const TextSpan(text: 'Estimated wait:  '),
+                                TextSpan(
+                                  text: _waitLabel,
+                                  style: const TextStyle(
+                                    color: matchmakingWhite,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Calibrating ping, balancing skill, and locking the cleanest three-player room.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: matchmakingDim,
+                                  height: 1.6,
+                                  fontSize: 11,
+                                ),
+                          ),
+                          const SizedBox(height: 20),
+                          const _QueueInsightCard(),
+                          SizedBox(
+                            height: constraints.maxHeight > 760 ? 36 : 24,
+                          ),
+                          _CancelButton(
+                            onTap: () => Navigator.of(context).pop(),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 96),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 48,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SizedBox(
-                width: 292,
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(color: matchmakingRed, width: 2),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: matchmakingRed.withValues(alpha: 0.3),
-                          blurRadius: 16,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'CANCEL',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                        color: matchmakingRed,
-                        letterSpacing: 3,
-                      ),
-                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -227,6 +229,229 @@ class _MatchmakingPageState extends ConsumerState<MatchmakingPage>
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
         builder: (BuildContext context) => const GameplayPage(),
+      ),
+    );
+  }
+}
+
+class _MatchmakingHeader extends StatelessWidget {
+  const _MatchmakingHeader({required this.waitLabel});
+
+  final String waitLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      runSpacing: 10,
+      spacing: 10,
+      children: <Widget>[
+        _HeaderChip(
+          label: 'QUEUE',
+          value: 'RANKED SOLO',
+          accent: matchmakingBlue,
+        ),
+        _HeaderChip(
+          label: 'ROOM',
+          value: '3 PLAYERS',
+          accent: matchmakingPurple,
+        ),
+        _HeaderChip(label: 'WAIT', value: waitLabel, accent: matchmakingGreen),
+      ],
+    );
+  }
+}
+
+class _HeaderChip extends StatelessWidget {
+  const _HeaderChip({
+    required this.label,
+    required this.value,
+    required this.accent,
+  });
+
+  final String label;
+  final String value;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: ShapeDecoration(
+        gradient: matchmakingPanelGradient,
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: accent.withValues(alpha: 0.25)),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontSize: 9,
+              color: matchmakingDim,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.6,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: 11,
+              color: accent,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QueueInsightCard extends StatelessWidget {
+  const _QueueInsightCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        gradient: matchmakingPanelGradient,
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: matchmakingBlue.withValues(alpha: 0.22)),
+        ),
+        shadows: <BoxShadow>[
+          BoxShadow(
+            color: matchmakingBlue.withValues(alpha: 0.10),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: const Row(
+        children: <Widget>[
+          Expanded(
+            child: _SignalColumn(
+              label: 'REGION',
+              value: 'AUTO',
+              accent: matchmakingBlue,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: _SignalColumn(
+              label: 'MATCH TYPE',
+              value: 'PATTERN RACE',
+              accent: matchmakingPurple,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: _SignalColumn(
+              label: 'STATUS',
+              value: 'SYNCING',
+              accent: matchmakingGreen,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SignalColumn extends StatelessWidget {
+  const _SignalColumn({
+    required this.label,
+    required this.value,
+    required this.accent,
+  });
+
+  final String label;
+  final String value;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontSize: 9,
+            color: matchmakingDim,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.4,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontSize: 11,
+            color: accent,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CancelButton extends StatelessWidget {
+  const _CancelButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 292,
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: matchmakingPanel,
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: matchmakingRed, width: 1.6),
+          ),
+          shadows: <BoxShadow>[
+            BoxShadow(
+              color: matchmakingRed.withValues(alpha: 0.22),
+              blurRadius: 18,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            customBorder: BeveledRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: Center(
+                child: Text(
+                  'CANCEL',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17,
+                    color: matchmakingRed,
+                    letterSpacing: 3,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

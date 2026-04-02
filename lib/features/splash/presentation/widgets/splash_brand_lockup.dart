@@ -26,37 +26,64 @@ class SplashBrandLockup extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
-                'TAP SPEED',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.8,
-                  color: Colors.white,
-                  shadows: <Shadow>[
-                    Shadow(
-                      color: const Color(
-                        0xFF7A96FF,
-                      ).withValues(alpha: 0.16 * glowPulse),
-                      blurRadius: 24,
-                    ),
-                    Shadow(
-                      color: Colors.white.withValues(alpha: 0.18),
-                      blurRadius: 8,
-                    ),
-                  ],
+              ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Color(0xFFE5EEFF),
+                      Color(0xFF8FF8FF),
+                      Color(0xFF16D5FF),
+                    ],
+                    stops: <double>[0.0, 0.5, 1.0],
+                  ).createShader(bounds);
+                },
+                child: Text(
+                  'TAP SPEED',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 2.5,
+                    color: Colors.white,
+                    shadows: <Shadow>[
+                      Shadow(
+                        color: const Color(
+                          0xFF16D5FF,
+                        ).withValues(alpha: 0.3 * glowPulse),
+                        blurRadius: 24,
+                      ),
+                      Shadow(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                'PATTERN RACE',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 10,
-                  letterSpacing: 4.2,
-                  color: const Color(0xFFAE8FFF),
-                  fontWeight: FontWeight.w700,
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A).withValues(alpha: 0.6),
+                  border: Border.all(
+                    color: const Color(0xFF4FAEFF).withValues(alpha: 0.3),
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'PATTERN RACE',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    letterSpacing: 6.0,
+                    color: const Color(0xFF7AF0FF),
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ],

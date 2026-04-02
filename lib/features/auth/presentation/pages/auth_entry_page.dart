@@ -40,24 +40,38 @@ class AuthEntryPage extends ConsumerWidget {
                     child: Column(
                       children: <Widget>[
                         const Spacer(flex: 3),
-                        Text(
-                          'TAP SPEED',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.5,
-                                color: Colors.white,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    color: const Color(
-                                      0xFF7B9AFF,
-                                    ).withValues(alpha: 0.3),
-                                    blurRadius: 18,
-                                  ),
-                                ],
-                              ),
+                        ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: <Color>[
+                                Color(0xFFE5EEFF),
+                                Color(0xFF8FF8FF),
+                                Color(0xFF16D5FF),
+                              ],
+                              stops: <double>[0.0, 0.5, 1.0],
+                            ).createShader(bounds);
+                          },
+                          child: Text(
+                            'TAP SPEED',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
+                                  fontSize: 34,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2.5,
+                                  color: Colors.white,
+                                  shadows: <Shadow>[
+                                    Shadow(
+                                      color: const Color(
+                                        0xFF16D5FF,
+                                      ).withValues(alpha: 0.5),
+                                      blurRadius: 18,
+                                    ),
+                                  ],
+                                ),
+                          ),
                         ),
                         const Spacer(flex: 4),
                         Text(
@@ -65,12 +79,24 @@ class AuthEntryPage extends ConsumerWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headlineLarge
                               ?.copyWith(
-                                fontSize: 38,
+                                fontSize: 42,
                                 height: 0.9,
                                 fontWeight: FontWeight.w900,
-                                letterSpacing: 0.8,
-                                color: const Color(0xFF6D82FF),
+                                letterSpacing: 1.2,
+                                color: const Color(0xFF7AF0FF),
                                 fontStyle: FontStyle.italic,
+                                shadows: <Shadow>[
+                                  Shadow(
+                                    color: const Color(
+                                      0xFF16D5FF,
+                                    ).withValues(alpha: 0.4),
+                                    blurRadius: 12,
+                                  ),
+                                  const Shadow(
+                                    color: Color(0xFF040A1A),
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
                               ),
                         ),
                         const SizedBox(height: 34),
@@ -88,7 +114,9 @@ class AuthEntryPage extends ConsumerWidget {
                           children: <Widget>[
                             Expanded(
                               child: Divider(
-                                color: Colors.white.withValues(alpha: 0.08),
+                                color: const Color(
+                                  0xFF16D5FF,
+                                ).withValues(alpha: 0.2),
                                 thickness: 1,
                               ),
                             ),
@@ -100,15 +128,18 @@ class AuthEntryPage extends ConsumerWidget {
                                 'OR',
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
-                                      color: const Color(0xFFCFE0FF),
+                                      color: const Color(0xFF7AF0FF),
                                       fontSize: 10,
-                                      fontWeight: FontWeight.w700,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 2.0,
                                     ),
                               ),
                             ),
                             Expanded(
                               child: Divider(
-                                color: Colors.white.withValues(alpha: 0.08),
+                                color: const Color(
+                                  0xFF16D5FF,
+                                ).withValues(alpha: 0.2),
                                 thickness: 1,
                               ),
                             ),
@@ -126,15 +157,34 @@ class AuthEntryPage extends ConsumerWidget {
                           },
                         ),
                         const Spacer(flex: 5),
-                        Text(
-                          'By playing you agree to fair-play rules',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                fontSize: 8.5,
-                                color: Colors.white.withValues(alpha: 0.55),
-                                fontWeight: FontWeight.w500,
-                              ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF040A1A,
+                            ).withValues(alpha: 0.6),
+                            border: Border.all(
+                              color: const Color(
+                                0xFF16D5FF,
+                              ).withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            '[ SYSTEM: FAIR PLAY STRICTLY ENFORCED ]',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  fontSize: 8,
+                                  letterSpacing: 1.5,
+                                  color: const Color(
+                                    0xFF16D5FF,
+                                  ).withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
                         ),
                         const SizedBox(height: 26),
                       ],

@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import 'matchmaking_page.dart';
 
-const Color _kBg = Color(0xFF0D0D0D);
-const Color _kPanel = Color(0xFF1A1A1A);
-const Color _kBorder = Color(0xFF2D2D2D);
-const Color _kBlue = Color(0xFF3B82F6);
-const Color _kPurple = Color(0xFF8B5CF6);
-const Color _kAmber = Color(0xFFF59E0B);
-const Color _kMuted = Color(0xFF9CA3AF);
-const Color _kWhite = Color(0xFFFFFFFF);
+const Color _kBg = Color(0xFF040A1A);
+const Color _kPanel = Color(0xFF08142D);
+const Color _kBorder = Color(0x6616D5FF);
+const Color _kBlue = Color(0xFF16D5FF);
+const Color _kPurple = Color(0xFF0F55FF);
+const Color _kAmber = Color(0xFF3DE3FF);
+const Color _kMuted = Color(0xFF6B7280);
+const Color _kWhite = Color(0xFFE5EEFF);
 
 const LinearGradient _kGradientBP = LinearGradient(
   colors: <Color>[_kBlue, _kPurple],
@@ -140,14 +140,26 @@ class _LobbyBackgroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final Paint gridPaint = Paint()
+      ..color = const Color(0xFF16D5FF).withValues(alpha: 0.05)
+      ..strokeWidth = 1.0;
+
+    const double gap = 32;
+    for (double x = 0; x < size.width; x += gap) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y < size.height; y += gap) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
     final Paint centerGlow = Paint()
       ..shader =
           const RadialGradient(
-            colors: <Color>[Color(0x120B5BFF), Colors.transparent],
+            colors: <Color>[Color(0x1816D5FF), Colors.transparent],
           ).createShader(
             Rect.fromCircle(
               center: Offset(size.width * 0.52, size.height * 0.26),
-              radius: size.width * 0.48,
+              radius: size.width * 0.6,
             ),
           );
     canvas.drawRect(Offset.zero & size, centerGlow);
@@ -155,11 +167,11 @@ class _LobbyBackgroundPainter extends CustomPainter {
     final Paint lowGlow = Paint()
       ..shader =
           const RadialGradient(
-            colors: <Color>[Color(0x08134D9B), Colors.transparent],
+            colors: <Color>[Color(0x120B5BFF), Colors.transparent],
           ).createShader(
             Rect.fromCircle(
-              center: Offset(size.width * 0.5, size.height * 0.62),
-              radius: size.width * 0.7,
+              center: Offset(size.width * 0.5, size.height * 0.7),
+              radius: size.width * 0.8,
             ),
           );
     canvas.drawRect(Offset.zero & size, lowGlow);
@@ -235,10 +247,15 @@ class _TopBar extends StatelessWidget {
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
+            decoration: const ShapeDecoration(
               color: _kPanel,
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: _kBorder),
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                side: BorderSide(color: _kBorder),
+              ),
             ),
             child: const Row(
               children: <Widget>[
@@ -338,7 +355,10 @@ class _PlayButton extends StatelessWidget {
                             fontSize: 38,
                             fontWeight: FontWeight.w900,
                             color: _kWhite,
-                            letterSpacing: 4,
+                            letterSpacing: 6,
+                            shadows: <Shadow>[
+                              Shadow(color: _kBlue, blurRadius: 16),
+                            ],
                           ),
                         ),
                       ),
@@ -388,19 +408,21 @@ class _OutlineButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: _kPanel,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: _kBorder),
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: _kBorder),
+          ),
         ),
         alignment: Alignment.center,
         child: Text(
           label,
           style: const TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w800,
             fontSize: 12,
             color: _kWhite,
-            letterSpacing: 1,
+            letterSpacing: 1.5,
           ),
         ),
       ),
@@ -415,10 +437,15 @@ class _DailyRewardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      decoration: const ShapeDecoration(
         color: _kPanel,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _kBorder),
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+          side: BorderSide(color: _kBorder),
+        ),
       ),
       child: Row(
         children: <Widget>[
@@ -437,11 +464,12 @@ class _DailyRewardCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Daily Reward',
+                  '[ REWARDS ]',
                   style: TextStyle(
-                    color: _kWhite,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
+                    color: _kBlue,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 10,
+                    letterSpacing: 2,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -503,20 +531,25 @@ class _LeaderboardPreview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const Text(
-          'TOP PLAYERS',
+          '[ TOP DRIVERS ]',
           style: TextStyle(
-            color: _kMuted,
-            fontWeight: FontWeight.w700,
-            fontSize: 13,
+            color: _kBlue,
+            fontWeight: FontWeight.w800,
+            fontSize: 12,
             letterSpacing: 2,
           ),
         ),
         const SizedBox(height: 12),
         Container(
-          decoration: BoxDecoration(
+          decoration: const ShapeDecoration(
             color: _kPanel,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _kBorder),
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+              ),
+              side: BorderSide(color: _kBorder),
+            ),
           ),
           child: ListView.separated(
             shrinkWrap: true,

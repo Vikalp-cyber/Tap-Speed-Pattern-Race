@@ -14,55 +14,54 @@ class AuthBackground extends StatelessWidget {
             decoration: BoxDecoration(color: Color(0xFF040404)),
           ),
         ),
-        Positioned.fill(child: _DiagonalStripeLayer()),
-        Positioned.fill(child: _EdgeRails()),
+        Positioned.fill(child: _GridMatrixLayer()),
+        Positioned.fill(child: _AuthCornerBrackets()),
       ],
     );
   }
 }
 
-class _DiagonalStripeLayer extends StatelessWidget {
-  const _DiagonalStripeLayer();
+class _GridMatrixLayer extends StatelessWidget {
+  const _GridMatrixLayer();
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: const _DiagonalStripePainter(),
+      painter: const _GridPainter(),
       child: const SizedBox.expand(),
     );
   }
 }
 
-class _DiagonalStripePainter extends CustomPainter {
-  const _DiagonalStripePainter();
+class _GridPainter extends CustomPainter {
+  const _GridPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint stripePaint = Paint()
-      ..color = const Color(0xFF131313).withValues(alpha: 0.42)
-      ..strokeWidth = 2;
-    final Paint glowPaint = Paint()
-      ..color = const Color(0xFF0B1630).withValues(alpha: 0.08);
+    final Paint gridPaint = Paint()
+      ..color = const Color(0xFF16D5FF).withValues(alpha: 0.05)
+      ..strokeWidth = 1.5;
 
+    final Paint glowPaint = Paint()
+      ..color = const Color(0xFF040A1A).withValues(alpha: 0.4);
     canvas.drawRect(Offset.zero & size, glowPaint);
 
-    const double gap = 14;
-    for (double x = -size.height; x < size.width + size.height; x += gap) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x + size.height, size.height),
-        stripePaint,
-      );
+    const double gap = 32;
+    for (double x = 0; x < size.width; x += gap) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y < size.height; y += gap) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
     final Paint orbPaint = Paint()
       ..shader =
           const RadialGradient(
-            colors: <Color>[Color(0x141AA0FF), Colors.transparent],
+            colors: <Color>[Color(0x1816D5FF), Colors.transparent],
           ).createShader(
             Rect.fromCircle(
-              center: Offset(size.width * 0.5, size.height * 0.45),
-              radius: math.max(size.width, size.height) * 0.45,
+              center: Offset(size.width * 0.5, size.height * 0.35),
+              radius: math.max(size.width, size.height) * 0.5,
             ),
           );
     canvas.drawRect(Offset.zero & size, orbPaint);
@@ -72,45 +71,65 @@ class _DiagonalStripePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _EdgeRails extends StatelessWidget {
-  const _EdgeRails();
+class _AuthCornerBrackets extends StatelessWidget {
+  const _AuthCornerBrackets();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      child: Row(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const <Widget>[_Rail(), _Rail()],
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const <Widget>[
+              _Bracket(alignment: Alignment.topLeft),
+              _Bracket(alignment: Alignment.topRight),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const <Widget>[
+              _Bracket(alignment: Alignment.bottomLeft),
+              _Bracket(alignment: Alignment.bottomRight),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-class _Rail extends StatelessWidget {
-  const _Rail();
+class _Bracket extends StatelessWidget {
+  const _Bracket({required this.alignment});
+
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
+    final bool isTop = alignment.y < 0;
+    final bool isLeft = alignment.x < 0;
+    const Color bracketColor = Color(0xFF16D5FF);
+
     return Container(
-      width: 2,
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      width: 42,
+      height: 42,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            const Color(0xFF4EA8FF).withValues(alpha: 0.95),
-            const Color(0xFF4EA8FF).withValues(alpha: 0.35),
-            const Color(0xFF4EA8FF).withValues(alpha: 0.95),
-          ],
+        border: Border(
+          top: isTop
+              ? BorderSide(color: bracketColor.withValues(alpha: 0.6), width: 3)
+              : BorderSide.none,
+          bottom: !isTop
+              ? BorderSide(color: bracketColor.withValues(alpha: 0.6), width: 3)
+              : BorderSide.none,
+          left: isLeft
+              ? BorderSide(color: bracketColor.withValues(alpha: 0.6), width: 3)
+              : BorderSide.none,
+          right: !isLeft
+              ? BorderSide(color: bracketColor.withValues(alpha: 0.6), width: 3)
+              : BorderSide.none,
         ),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: const Color(0xFF4EA8FF).withValues(alpha: 0.18),
-            blurRadius: 12,
-          ),
-        ],
       ),
     );
   }

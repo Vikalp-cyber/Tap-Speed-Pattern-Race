@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/game_demo_sequence.dart';
+import 'gameplay_panel.dart';
 import 'gameplay_tokens.dart';
 
 class GameplayCountdownOverlay extends StatelessWidget {
@@ -20,120 +21,229 @@ class GameplayCountdownOverlay extends StatelessWidget {
     final bool isGo = step.countdownValue == 0;
 
     return ColoredBox(
-      color: gameplayBg.withValues(alpha: 0.90),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          for (int index = 0; index < 3; index += 1)
-            _StaggeredRipple(controller: rippleController, delay: index * 0.4),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      color: gameplayBg.withValues(alpha: 0.88),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+          child: Column(
             children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 7,
-                ),
-                decoration: BoxDecoration(
-                  color: gameplayBlue.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(
-                    color: gameplayBlue.withValues(alpha: 0.3),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 9,
                   ),
-                ),
-                child: const Text(
-                  'MATCH STARTING',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: gameplayBlue,
-                    letterSpacing: 3,
+                  decoration: BoxDecoration(
+                    color: gameplayBlue.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: gameplayBlue.withValues(alpha: 0.28),
+                    ),
+                  ),
+                  child: const Text(
+                    'MATCH STARTING',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: gameplayBlue,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 2.2,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
-              ScaleTransition(
-                scale: popScale,
-                child: isGo
-                    ? ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return const LinearGradient(
-                            colors: <Color>[
-                              gameplayBlue,
-                              gameplayPurple,
-                              gameplayGreen,
-                            ],
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.srcIn,
-                        child: const Text(
-                          'GO!',
-                          style: TextStyle(
-                            fontSize: 80,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 6,
-                            color: gameplayWhite,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        '${step.countdownValue}',
-                        style: TextStyle(
-                          fontSize: 160,
-                          fontWeight: FontWeight.w900,
-                          color: gameplayWhite,
-                          height: 1,
-                          shadows: <Shadow>[
-                            Shadow(
-                              color: gameplayBlue.withValues(alpha: 0.9),
-                              blurRadius: 40,
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 280,
+                        height: 280,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            for (int index = 0; index < 3; index += 1)
+                              _StaggeredRipple(
+                                controller: rippleController,
+                                delay: index * 0.4,
+                              ),
+                            Container(
+                              width: 216,
+                              height: 216,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: <Color>[
+                                    gameplayBlue.withValues(alpha: 0.14),
+                                    gameplayPurple.withValues(alpha: 0.08),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: gameplayBlue.withValues(alpha: 0.22),
+                                ),
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    color: gameplayBlue.withValues(alpha: 0.16),
+                                    blurRadius: 30,
+                                    spreadRadius: 4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 156,
+                              height: 156,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: <Color>[
+                                    gameplayPanelElevated,
+                                    gameplayPanel,
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: gameplayBlue.withValues(alpha: 0.28),
+                                  width: 1.6,
+                                ),
+                              ),
+                            ),
+                            ScaleTransition(
+                              scale: popScale,
+                              child: isGo
+                                  ? ShaderMask(
+                                      shaderCallback: (Rect bounds) {
+                                        return const LinearGradient(
+                                          colors: <Color>[
+                                            gameplayBlue,
+                                            gameplayPurple,
+                                            gameplayGreen,
+                                          ],
+                                        ).createShader(bounds);
+                                      },
+                                      blendMode: BlendMode.srcIn,
+                                      child: const Text(
+                                        'GO!',
+                                        style: TextStyle(
+                                          fontSize: 78,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 6,
+                                          color: gameplayWhite,
+                                        ),
+                                      ),
+                                    )
+                                  : Text(
+                                      '${step.countdownValue}',
+                                      style: TextStyle(
+                                        fontSize: 138,
+                                        fontWeight: FontWeight.w900,
+                                        color: gameplayWhite,
+                                        height: 1,
+                                        shadows: <Shadow>[
+                                          Shadow(
+                                            color: gameplayBlue.withValues(
+                                              alpha: 0.8,
+                                            ),
+                                            blurRadius: 32,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
                       ),
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                'GET READY',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: gameplayMuted,
-                  letterSpacing: 5,
+                      const SizedBox(height: 14),
+                      const Text(
+                        'GET READY',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: gameplayMuted,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 5,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Three players synced. Sequence feed is about to unlock.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: gameplayDim,
+                          fontSize: 11,
+                          height: 1.6,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 48),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  _MatchAvatar(name: 'YOU', color: gameplayBlue, isYou: true),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'VS',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: gameplayDim,
-                        fontWeight: FontWeight.w700,
-                      ),
+              GameplayPanel(
+                accentColor: gameplayBlue,
+                child: const Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            'TRIO LOCKUP',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: gameplayDim,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.8,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'LIVE FEED',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: gameplayBlue,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.8,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  _MatchAvatar(name: 'NightOwl', color: gameplayPurple),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'VS',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: gameplayDim,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: _MatchAvatar(
+                            name: 'YOU',
+                            role: 'PLAYER 1',
+                            color: gameplayBlue,
+                            isYou: true,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: _MatchAvatar(
+                            name: 'NightOwl',
+                            role: 'PLAYER 2',
+                            color: gameplayPurple,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: _MatchAvatar(
+                            name: 'FastFin',
+                            role: 'PLAYER 3',
+                            color: gameplayAmber,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  _MatchAvatar(name: 'FastFin', color: gameplayAmber),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -151,18 +261,21 @@ class _StaggeredRipple extends StatelessWidget {
       animation: controller,
       builder: (_, __) {
         final double t = (controller.value + delay) % 1.0;
-        final double scale = 0.6 + (t * 1.6);
-        final double opacity = (1.0 - t) * 0.5;
+        final double scale = 0.58 + (t * 1.9);
+        final double opacity = (1.0 - t) * 0.45;
         return Transform.scale(
           scale: scale,
           child: Opacity(
             opacity: opacity.clamp(0, 1),
             child: Container(
-              width: 160,
-              height: 160,
+              width: 138,
+              height: 138,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: gameplayBlue, width: 1.5),
+                border: Border.all(
+                  color: gameplayBlue.withValues(alpha: 0.75),
+                  width: 1.4,
+                ),
               ),
             ),
           ),
@@ -175,11 +288,13 @@ class _StaggeredRipple extends StatelessWidget {
 class _MatchAvatar extends StatelessWidget {
   const _MatchAvatar({
     required this.name,
+    required this.role,
     required this.color,
     this.isYou = false,
   });
 
   final String name;
+  final String role;
   final Color color;
   final bool isYou;
 
@@ -188,37 +303,47 @@ class _MatchAvatar extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          width: 44,
-          height: 44,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: <Color>[color, color.withValues(alpha: 0.5)],
+              colors: <Color>[color, color.withValues(alpha: 0.45)],
             ),
             border: Border.all(
               color: isYou ? color : color.withValues(alpha: 0.4),
-              width: isYou ? 2 : 1,
+              width: isYou ? 2 : 1.2,
             ),
-            boxShadow: isYou
-                ? <BoxShadow>[
-                    BoxShadow(
-                      color: color.withValues(alpha: 0.4),
-                      blurRadius: 14,
-                    ),
-                  ]
-                : null,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: color.withValues(alpha: isYou ? 0.30 : 0.16),
+                blurRadius: 16,
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Text(
           name,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: 1,
             color: isYou ? gameplayWhite : gameplayMuted,
-            fontWeight: isYou ? FontWeight.w700 : FontWeight.normal,
+            fontWeight: isYou ? FontWeight.w800 : FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          role,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 9,
+            color: gameplayDim,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
           ),
         ),
       ],

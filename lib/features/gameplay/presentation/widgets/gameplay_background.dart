@@ -8,9 +8,47 @@ class GameplayGridBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: const _GridPainter(),
-      child: const SizedBox.expand(),
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        const DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[gameplayBg, Color(0xFF091427), gameplayBg],
+            ),
+          ),
+        ),
+        const Positioned.fill(child: CustomPaint(painter: _GridPainter())),
+        Positioned(
+          top: -120,
+          right: -68,
+          child: _BackgroundGlow(
+            size: 300,
+            color: gameplayBlue.withValues(alpha: 0.14),
+          ),
+        ),
+        Positioned(
+          top: 120,
+          left: -100,
+          child: _BackgroundGlow(
+            size: 260,
+            color: gameplayPurple.withValues(alpha: 0.14),
+          ),
+        ),
+        Positioned(
+          bottom: -150,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: _BackgroundGlow(
+              size: 360,
+              color: gameplayBlueDeep.withValues(alpha: 0.12),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -22,27 +60,60 @@ class GameplayAmbientGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color;
-    switch (phase) {
-      case GameDemoPhase.failure:
-        color = gameplayRed.withValues(alpha: 0.14);
-      case GameDemoPhase.victory:
-        color = gameplayAmber.withValues(alpha: 0.18);
-      case GameDemoPhase.levelUp:
-        color = gameplayAmber.withValues(alpha: 0.14);
-      case GameDemoPhase.countdown:
-      case GameDemoPhase.pattern:
-      case GameDemoPhase.input:
-        return const SizedBox.shrink();
-    }
+    final (Color topColor, Color bottomColor) = switch (phase) {
+      GameDemoPhase.failure => (
+        gameplayRed.withValues(alpha: 0.14),
+        gameplayRed.withValues(alpha: 0.08),
+      ),
+      GameDemoPhase.levelUp => (
+        gameplayAmber.withValues(alpha: 0.15),
+        gameplayBlue.withValues(alpha: 0.08),
+      ),
+      GameDemoPhase.victory => (
+        gameplayAmber.withValues(alpha: 0.18),
+        gameplayBlue.withValues(alpha: 0.10),
+      ),
+      GameDemoPhase.countdown => (
+        gameplayBlue.withValues(alpha: 0.10),
+        gameplayPurple.withValues(alpha: 0.08),
+      ),
+      GameDemoPhase.pattern => (
+        gameplayBlue.withValues(alpha: 0.08),
+        gameplayBlueDeep.withValues(alpha: 0.08),
+      ),
+      GameDemoPhase.input => (
+        gameplayGreen.withValues(alpha: 0.10),
+        gameplayBlue.withValues(alpha: 0.06),
+      ),
+    };
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          center: const Alignment(0, -0.3),
-          radius: 1.2,
-          colors: <Color>[color, Colors.transparent],
-        ),
+    return IgnorePointer(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0, -0.32),
+                radius: 1.15,
+                colors: <Color>[topColor, Colors.transparent],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 280,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: <Color>[bottomColor, Colors.transparent],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -54,17 +125,54 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.04)
+      ..color = gameplayBlue.withValues(alpha: 0.05)
       ..strokeWidth = 1;
 
-    for (double x = 0; x < size.width; x += 40) {
+    for (double x = 0; x < size.width; x += 36) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
-    for (double y = 0; y < size.height; y += 40) {
+    for (double y = 0; y < size.height; y += 36) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+
+    final Paint diagonalPaint = Paint()
+      ..color = gameplayBlue.withValues(alpha: 0.028)
+      ..strokeWidth = 1.2;
+    const double diagonalGap = 70;
+    for (
+      double start = -size.height;
+      start < size.width;
+      start += diagonalGap
+    ) {
+      canvas.drawLine(
+        Offset(start, 0),
+        Offset(start + size.height, size.height),
+        diagonalPaint,
+      );
     }
   }
 
   @override
   bool shouldRepaint(covariant _GridPainter oldDelegate) => false;
+}
+
+class _BackgroundGlow extends StatelessWidget {
+  const _BackgroundGlow({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(colors: <Color>[color, Colors.transparent]),
+        ),
+      ),
+    );
+  }
 }

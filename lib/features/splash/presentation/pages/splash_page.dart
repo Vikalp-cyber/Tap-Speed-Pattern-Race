@@ -66,7 +66,7 @@ class _SplashPageState extends State<SplashPage>
           return Stack(
             children: <Widget>[
               Positioned.fill(child: SplashStarfield(progress: progress)),
-              const Positioned.fill(child: _SplashFrame()),
+              Positioned.fill(child: _SplashFrame(progress: progress)),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -97,43 +97,81 @@ class _SplashPageState extends State<SplashPage>
 }
 
 class _SplashFrame extends StatelessWidget {
-  const _SplashFrame();
+  const _SplashFrame({required this.progress});
+
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const <Widget>[_FrameRail(), _FrameRail()],
+    final double opacity = Curves.easeInQuad.transform(
+      (progress * 2).clamp(0.0, 1.0),
+    );
+    final double scale =
+        1.05 -
+        (0.05 * Curves.easeOutCubic.transform((progress * 2).clamp(0.0, 1.0)));
+
+    return Opacity(
+      opacity: opacity,
+      child: Transform.scale(
+        scale: scale,
+        child: Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const <Widget>[
+                  _CornerBracket(alignment: Alignment.topLeft),
+                  _CornerBracket(alignment: Alignment.topRight),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const <Widget>[
+                  _CornerBracket(alignment: Alignment.bottomLeft),
+                  _CornerBracket(alignment: Alignment.bottomRight),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class _FrameRail extends StatelessWidget {
-  const _FrameRail();
+class _CornerBracket extends StatelessWidget {
+  const _CornerBracket({required this.alignment});
+
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
+    final bool isTop = alignment.y < 0;
+    final bool isLeft = alignment.x < 0;
+    const Color bracketColor = Color(0xFF4FAEFF);
+
     return Container(
-      width: 2,
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      width: 48,
+      height: 48,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            const Color(0xFF4FAEFF).withValues(alpha: 0.92),
-            const Color(0xFF4FAEFF).withValues(alpha: 0.45),
-            const Color(0xFF4FAEFF).withValues(alpha: 0.92),
-          ],
+        border: Border(
+          top: isTop
+              ? const BorderSide(color: bracketColor, width: 3)
+              : BorderSide.none,
+          bottom: !isTop
+              ? const BorderSide(color: bracketColor, width: 3)
+              : BorderSide.none,
+          left: isLeft
+              ? const BorderSide(color: bracketColor, width: 3)
+              : BorderSide.none,
+          right: !isLeft
+              ? const BorderSide(color: bracketColor, width: 3)
+              : BorderSide.none,
         ),
         boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: const Color(0xFF4FAEFF).withValues(alpha: 0.2),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: bracketColor.withValues(alpha: 0.3), blurRadius: 10),
         ],
       ),
     );

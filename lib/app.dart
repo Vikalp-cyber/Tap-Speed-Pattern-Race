@@ -129,8 +129,15 @@ class _AppBottomNav extends StatelessWidget {
       child: Container(
         height: 80,
         decoration: const BoxDecoration(
-          color: Color(0xFF1A1A1A),
-          border: Border(top: BorderSide(color: Color(0xFF2D2D2D))),
+          color: Color(0xFF040A1A),
+          border: Border(top: BorderSide(color: Color(0x6616D5FF), width: 1.5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Color(0x2216D5FF),
+              blurRadius: 12,
+              offset: Offset(0, -2),
+            ),
+          ],
         ),
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Row(
@@ -164,23 +171,32 @@ class _NavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         decoration: active
-            ? BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: <BoxShadow>[
+            ? ShapeDecoration(
+                color: const Color(0xFF16D5FF).withValues(alpha: 0.15),
+                shape: BeveledRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  side: BorderSide(
+                    color: const Color(0xFF16D5FF).withValues(alpha: 0.8),
+                  ),
+                ),
+                shadows: <BoxShadow>[
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
+                    color: const Color(0xFF16D5FF).withValues(alpha: 0.5),
                     blurRadius: 14,
-                    spreadRadius: 2,
                   ),
                 ],
               )
-            : null,
+            : const ShapeDecoration(
+                shape: BeveledRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                ),
+              ),
         child: Icon(
           icon,
           size: 26,
-          color: active ? const Color(0xFF3B82F6) : const Color(0xFF9CA3AF),
+          color: active ? const Color(0xFFE5EEFF) : const Color(0xFF6B7280),
         ),
       ),
     );

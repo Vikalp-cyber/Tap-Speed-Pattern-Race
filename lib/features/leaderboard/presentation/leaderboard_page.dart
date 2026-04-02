@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/presentation/controllers/auth_controller.dart';
 
-const Color _kBg = Color(0xFF0D0D0D);
-const Color _kPanel = Color(0xFF1A1A1A);
-const Color _kBorder = Color(0xFF2D2D2D);
-const Color _kBlue = Color(0xFF3B82F6);
-const Color _kBlueDeep = Color(0xFF1D4ED8);
-const Color _kAmber = Color(0xFFF59E0B);
-const Color _kBronze = Color(0xFFB45309);
-const Color _kSilver = Color(0xFF9CA3AF);
-const Color _kMuted = Color(0xFF9CA3AF);
-const Color _kWhite = Color(0xFFFFFFFF);
+const Color _kBg = Color(0xFF040A1A);
+const Color _kPanel = Color(0xFF08142D);
+const Color _kBorder = Color(0x6616D5FF);
+const Color _kBlue = Color(0xFF16D5FF);
+const Color _kBlueDeep = Color(0xFF0F55FF);
+const Color _kAmber = Color(0xFFFDE047);
+const Color _kBronze = Color(0xFFD97706);
+const Color _kSilver = Color(0xFF94A3B8);
+const Color _kMuted = Color(0xFF6B7280);
+const Color _kWhite = Color(0xFFE5EEFF);
 
 class _Player {
   const _Player({
@@ -62,29 +62,36 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
 
     return ColoredBox(
       color: _kBg,
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          _Header(
-            tabIndex: _tabIndex,
-            onTabChanged: (int index) {
-              setState(() => _tabIndex = index);
-            },
+          Positioned.fill(
+            child: CustomPaint(painter: const _LeaderboardGridPainter()),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 620),
-                  child: Column(
-                    children: <Widget>[
-                      _Podium(players: podium),
-                      _RankedList(players: list),
-                    ],
+          Column(
+            children: <Widget>[
+              _Header(
+                tabIndex: _tabIndex,
+                onTabChanged: (int index) {
+                  setState(() => _tabIndex = index);
+                },
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 620),
+                      child: Column(
+                        children: <Widget>[
+                          _Podium(players: podium),
+                          _RankedList(players: list),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -159,17 +166,22 @@ class _Header extends StatelessWidget {
                       horizontal: 12,
                       vertical: 6,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(color: _kBlue),
+                    decoration: const ShapeDecoration(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8),
+                        ),
+                        side: BorderSide(color: _kBlue),
+                      ),
                     ),
                     child: const Text(
-                      'ALL TIME',
+                      '[ ALL TIME ]',
                       style: TextStyle(
                         color: _kBlue,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5,
                       ),
                     ),
                   ),
@@ -200,9 +212,19 @@ class _TabPill extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: active ? _kBorder : Colors.transparent,
-          borderRadius: BorderRadius.circular(50),
+          shape: BeveledRectangleBorder(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+            side: BorderSide(
+              color: active
+                  ? _kBlue.withValues(alpha: 0.5)
+                  : Colors.transparent,
+            ),
+          ),
         ),
         child: Text(
           label,
@@ -315,14 +337,16 @@ class _PodiumSlot extends StatelessWidget {
               Container(
                 width: _avatarSize,
                 height: _avatarSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                decoration: ShapeDecoration(
                   color: _kPanel,
-                  border: Border.all(color: _borderColor, width: 4),
-                  boxShadow: player.rank == 1
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.circular(_avatarSize * 0.25),
+                    side: BorderSide(color: _borderColor, width: 4),
+                  ),
+                  shadows: player.rank == 1
                       ? <BoxShadow>[
                           BoxShadow(
-                            color: _kAmber.withValues(alpha: 0.3),
+                            color: _kAmber.withValues(alpha: 0.5),
                             blurRadius: 20,
                             spreadRadius: 2,
                           ),
@@ -449,17 +473,19 @@ class _RankRow extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: isMe ? _kBlueDeep.withValues(alpha: 0.2) : _kPanel,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isMe ? _kBlue : _kBorder,
-          width: isMe ? 1.5 : 1,
+      decoration: ShapeDecoration(
+        color: isMe ? _kBlueDeep.withValues(alpha: 0.3) : _kPanel,
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: isMe ? _kBlue : _kBorder,
+            width: isMe ? 1.5 : 1,
+          ),
         ),
-        boxShadow: isMe
+        shadows: isMe
             ? <BoxShadow>[
                 BoxShadow(
-                  color: _kBlue.withValues(alpha: 0.12),
+                  color: _kBlue.withValues(alpha: 0.25),
                   blurRadius: 12,
                   spreadRadius: 1,
                 ),
@@ -484,12 +510,16 @@ class _RankRow extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isMe ? _kBlue.withValues(alpha: 0.25) : _kBorder,
-              border: isMe
-                  ? Border.all(color: _kBlue.withValues(alpha: 0.6))
-                  : null,
+            decoration: ShapeDecoration(
+              color: isMe
+                  ? _kBlue.withValues(alpha: 0.25)
+                  : _kBorder.withValues(alpha: 0.2),
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: isMe
+                    ? BorderSide(color: _kBlue.withValues(alpha: 0.6))
+                    : const BorderSide(color: Colors.transparent),
+              ),
             ),
           ),
           const SizedBox(width: 14),
@@ -527,4 +557,26 @@ class _RankRow extends StatelessWidget {
     }
     return buffer.toString();
   }
+}
+
+class _LeaderboardGridPainter extends CustomPainter {
+  const _LeaderboardGridPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint gridPaint = Paint()
+      ..color = const Color(0xFF16D5FF).withValues(alpha: 0.05)
+      ..strokeWidth = 1.0;
+
+    const double gap = 32;
+    for (double x = 0; x < size.width; x += gap) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y < size.height; y += gap) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -62,20 +62,20 @@ class AuthActionButton extends StatelessWidget {
     final ButtonStyle style = ButtonStyle(
       minimumSize: const WidgetStatePropertyAll<Size>(Size.fromHeight(54)),
       shape: WidgetStatePropertyAll<OutlinedBorder>(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
         EdgeInsets.symmetric(horizontal: 24),
       ),
       backgroundColor: WidgetStatePropertyAll<Color>(
-        isPrimary ? Colors.transparent : const Color(0x12000000),
+        isPrimary ? Colors.transparent : const Color(0x22000000),
       ),
       side: WidgetStatePropertyAll<BorderSide>(
         isPrimary
             ? BorderSide.none
             : BorderSide(
-                color: Colors.white.withValues(alpha: 0.4),
-                width: 1.2,
+                color: const Color(0xFF16D5FF).withValues(alpha: 0.5),
+                width: 1.5,
               ),
       ),
       overlayColor: WidgetStatePropertyAll<Color>(
@@ -85,14 +85,16 @@ class AuthActionButton extends StatelessWidget {
 
     if (isPrimary) {
       return DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           gradient: const LinearGradient(
-            colors: <Color>[Color(0xFF4B8DFF), Color(0xFF7B57FF)],
+            colors: <Color>[Color(0xFF16D5FF), Color(0xFF0F55FF)],
           ),
-          borderRadius: BorderRadius.circular(999),
-          boxShadow: <BoxShadow>[
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          shadows: <BoxShadow>[
             BoxShadow(
-              color: const Color(0xFF6A73FF).withValues(alpha: 0.35),
+              color: const Color(0xFF16D5FF).withValues(alpha: 0.4),
               blurRadius: 18,
               spreadRadius: 1,
             ),
